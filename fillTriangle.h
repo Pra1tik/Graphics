@@ -29,8 +29,10 @@ int orientation(vec p1, vec p2, vec p3)
 }
 
 
+const vec lightPos = { 7.f,-3.f,-2.f };
 
 int tcounter = 0;
+
 void rasterize(vec up0, vec up1, vec up2)
 {
     float start = SDL_GetTicks();
@@ -117,11 +119,21 @@ void rasterize(vec up0, vec up1, vec up2)
 
                 float invZ = (w0) / p0.z + (w1) / p1.z + (w2) / p2.z;
                 invZ = (1 / invZ);
+
                 if (zbuffer[i][j] > invZ)
                 {
+                    float distX = pow((j - lightPos.x), 2);
+                    float distY = pow((i - lightPos.y), 2);
+                    float distZ = pow((invZ - lightPos.z), 2);
+
+                    float mag = sqrt(distX + distY + distZ);
+
+                    float intenstity = 200 / mag;
+                    //std::cout << mag << std::endl;
+                    SDL_SetRenderDrawColor(gRenderer, 255 * intenstity, 0, 0, 255);
                     zbuffer[i][j] = invZ;
                     SDL_RenderDrawPoint(gRenderer, j, i);
-
+                    SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
                 }
             }
         }

@@ -58,6 +58,11 @@ vec scalarMulVec(float k, vec a)
     return res;
 }
 
+float dot(const vec& a, const vec& b)
+{
+    return (a.x * b.x + a.y * b.y * a.z * b.z);
+}
+
 vec cameraPos = { 0.f, 0.f, 3.f };
 vec cameraTarget = { 0.f, 0.f, 0.f };
 vec cameraDirection = subAndnormalize(cameraTarget, cameraPos);
@@ -67,21 +72,27 @@ vec cameraFront = { 0.f, 0.f, -1.f };
 //cameraPos + camreaFront
 
 //W press
-float cameraSpeed = 0.5f;
+float cameraSpeed = 0.1f;
 
-void cameraMatrix(float a[][4])
+void cameraMatrix(float a[][4], const vec& eye, const vec& center, const vec& up)
 {
-    a[0][0] = cameraRight.x;
-    a[0][1] = cameraRight.y;
-    a[0][2] = cameraRight.z;
+    vec temp = { center.x - eye.x, center.y - eye.y, center.z - eye.z };
+    vec f = (normalizeVec(temp));
+    vec s = (normalizeVec(crossProduct(f, up)));
+    vec u = (crossProduct(s, f));
 
-    a[1][0] = cameraUp.x;
-    a[1][1] = cameraUp.y;
-    a[1][2] = cameraUp.z;
-
-    a[2][0] = cameraDirection.x;
-    a[2][1] = cameraDirection.y;
-    a[2][2] = cameraDirection.z;
-
+    a[0][0] = s.x;
+    a[1][0] = s.y;
+    a[2][0] = s.z;
+    a[0][1] = u.x;
+    a[1][1] = u.y;
+    a[2][1] = u.z;
+    a[0][2] = -f.x;
+    a[1][2] = -f.y;
+    a[2][2] = -f.z;
+    a[3][0] = -dot(s, eye);
+    a[3][1] = -dot(u, eye);
+    a[3][2] = dot(f, eye);
     a[3][3] = 1;
+
 }

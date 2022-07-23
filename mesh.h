@@ -114,3 +114,33 @@ void rotateMeshY(Mesh* mesh, float angle)
         mesh->mVertices[i + 2] = z;
     }
 }
+
+void rotateMeshZ(Mesh* mesh, float angle)
+{
+    float radian = (PI / 180.f) * angle;
+    for (uint32_t i = 0; i < mesh->mVertices.size(); i += 3)
+    {
+        float x, y;
+        x = cos(radian) * mesh->mVertices[i] -
+            sin(radian) * mesh->mVertices[i + 1];
+        y = sin(radian) * mesh->mVertices[i] +
+            cos(radian) * mesh->mVertices[i + 1];
+        mesh->mVertices[i] = x;
+        mesh->mVertices[i + 1] = y;
+    }
+}
+
+void rotateMeshX(Mesh* mesh, float angle)
+{
+    float radian = (PI / 180.f) * angle;
+    for (uint32_t i = 0; i < mesh->mVertices.size(); i += 3)
+    {
+        float y, z;
+        y = cos(radian) * mesh->mVertices[i + 1] +
+            sin(radian) * mesh->mVertices[i + 2];
+        z = -sin(radian) * mesh->mVertices[i + 1] +
+            cos(radian) * mesh->mVertices[i + 2];
+        mesh->mVertices[i + 1] = y;
+        mesh->mVertices[i + 2] = z;
+    }
+}

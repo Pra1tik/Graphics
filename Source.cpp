@@ -5,7 +5,6 @@
 #undef far
 #undef near
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 #include <cstdio>
 #include <string>
 #include <iostream>
@@ -61,14 +60,6 @@ bool init()
             {
                 //Initialize renderer color
                 SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-
-                //Initialize PNG loading
-                int imgFlags = IMG_INIT_PNG;
-                if (!(IMG_Init(imgFlags) & imgFlags))
-                {
-                    printf("Failed to initialize SDl_image: %s \n", IMG_GetError());
-                    success = false;
-                }
             }
         }
     }
@@ -182,9 +173,14 @@ int main()
     SDL_Event e;
     int ctr = 0;
     createTexture();
-    argList argument;
+    //argList argument;
 
-    
+    int xpos, ypos;
+    bool firstMouse = true;
+    int lastX = 0;
+    int lastY = 0;
+    float yaw = -90.f;
+    float pitch = 0.f;
 
     Mesh houseMesh;
     loadFromFile("untitled.obj", &houseMesh);
@@ -192,6 +188,9 @@ int main()
 
     std::cout << "Loaded\n";
     std::cout << temphouseMesh.mVertices.size() << "\n";
+
+    SDL_WarpMouseInWindow(window, 400, 300);
+    SDL_SetWindowMouseGrab(window, SDL_TRUE);
 
     while (!quit)
     {
@@ -232,9 +231,46 @@ int main()
                 case SDLK_d:
                     cameraPos = addVec(cameraPos, scalarMulVec(cameraSpeed, normalizeVec(crossProduct(cameraFront, cameraUp))));
                     break;
-
-
+                
+                case SDLK_r:
+                    cameraPos = { 0,0,3 };
+                    cameraFront = { 0,0,-1 };
+                    SDL_WarpMouseInWindow(window, 400, 300);
+                    break;
                 }
+            }
+            if (e.type == SDL_MOUSEMOTION)
+            {
+                SDL_GetMouseState(&xpos, &ypos);
+                if (firstMouse)
+                {
+                    lastX = xpos;
+                    lastY = ypos;
+                    firstMouse = false;
+                }
+
+                float xoffset = xpos - lastX;
+                float yoffset = lastY - ypos;
+                lastX = xpos;
+                lastY = ypos;
+
+                float sensitivity = .4f;
+                xoffset *= sensitivity;
+                yoffset *= sensitivity;
+
+                yaw += xoffset;
+                pitch += yoffset;
+
+                if (pitch > 89.0f)
+                    pitch = 89.0f;
+                if (pitch < -89.0f)
+                    pitch = -89.0f;
+
+                vec direction{ 0,0,0 };
+                direction.x = cos(yaw * 3.14159 / 180) * cos(pitch * 3.14159 / 180);
+                direction.y = sin(pitch * 3.14159 / 180);
+                direction.z = sin(yaw * 3.14159 / 180) * cos(pitch * 3.14159 / 180);
+                cameraFront = normalizeVec(direction);
             }
         }
 
@@ -262,10 +298,8 @@ int main()
             }
         }
         //setup camera parameters
-        cameraDirection = normalizeVec(addVec(cameraPos, cameraFront));
-        cameraRight = normalizeVec(crossProduct(cameraUp, cameraDirection));
         memset(cameraMat, 0, sizeof(cameraMat));
-        cameraMatrix(cameraMat);
+        cameraMatrix(cameraMat,cameraPos,cameraFront,{0,1,0});
 
         // for(int i = 0; i < 4; i++)
         // {
@@ -281,6 +315,8 @@ int main()
 
 
         rotateMeshY(&temphouseMesh, -55.f);
+        rotateMeshX(&temphouseMesh, -23.f);
+        //rotateMeshZ(&temphouseMesh, -69.f);
         //std::cout << "First translation\n";
         translateMesh(&temphouseMesh, 0.f, 0.f);
         // normalizeMesh(&cube);

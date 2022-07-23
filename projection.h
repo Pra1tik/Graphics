@@ -88,7 +88,12 @@ void projectMesh(Mesh* mesh, const float projMat[][N])
             vec p0 = { projPoints[0][0], projPoints[0][1], projPoints[0][2] };
             vec p1 = { projPoints[1][0], projPoints[1][1], projPoints[1][2] };
             vec p2 = { projPoints[2][0], projPoints[2][1], projPoints[2][2] };
-
+            
+            //SDL_SetRenderDrawColor(gRenderer, 255, 0, 0, 255);
+            //SDL_RenderDrawLine(gRenderer, p0.x, p0.y, p1.x, p1.y);
+            //SDL_RenderDrawLine(gRenderer, p2.x, p2.y, p1.x, p1.y);
+            //SDL_RenderDrawLine(gRenderer, p0.x, p0.y, p2.x, p2.y);
+            //SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
              
             //std::cout << p0.x << " " << p0.y << " ";
             //std::cout << p1.x << " " << p1.y << " ";
