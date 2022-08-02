@@ -9,6 +9,7 @@ struct argList
 };
 
 #define epsilon 0.1
+
 void projectMesh(Mesh* mesh, const float projMat[][N])
 {
     SDL_SetRenderTarget(gRenderer, gTexture);
@@ -120,7 +121,7 @@ void proj(float projMat[][4])
     float aspectRatio, FOV, t, b;
     float angle = 90.f;
 
-    FOV = (3.1415 / 180) * angle;
+    FOV = angle;
     aspectRatio = SCREEN_WIDTH / (float)SCREEN_HEIGHT;
     t = tanf(FOV / 2.f) * n;
     b = -t;
@@ -144,6 +145,12 @@ void proj(float projMat[][4])
     projMat[2][2] = -(f + n) / (f - n);
     projMat[2][3] = -(2 * f * n) / (f - n);
     projMat[3][2] = -1.f;
+
+    //projMat[0][0] = 1/ (aspectRatio*t);
+    //projMat[1][1] = 1/t;
+    //projMat[2][2] = (f) / (f - n);
+    //projMat[2][3] = 1;
+    //projMat[3][2] = f*n/(f-n);
 
     // for(int i = 0; i < 4; i++)
     // {

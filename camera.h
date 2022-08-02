@@ -72,7 +72,7 @@ vec cameraFront = { 0.f, 0.f, -1.f };
 //cameraPos + camreaFront
 
 //W press
-float cameraSpeed = 0.1f;
+float cameraSpeed = 0.2f;
 
 void cameraMatrix(float a[][4], const vec& eye, const vec& center, const vec& up)
 {

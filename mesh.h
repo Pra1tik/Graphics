@@ -28,7 +28,7 @@ struct Mesh
 void translateMesh(Mesh* mesh, float x, float y, float z = -40)
 {
     //std::cout << "After translation\n";
-    float l = 20.f, b = 20.f, h = 20.f;
+    float l = 60.f, b = 60.f, h = 20.f;
     for (uint32_t i = 0; i < mesh->mVertices.size(); i += 3)
     {
         mesh->mVertices[i] = mesh->mVertices[i] * l + x;
